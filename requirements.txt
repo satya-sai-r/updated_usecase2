@@ -1,9 +1,9 @@
-duckdb==0.10.3
-polars==0.20.31
+duckdb
+polars
 openpyxl==3.1.2
-psycopg[binary]==3.1.19
+psycopg-binary
 nats-py==2.7.2
-python-dateparser==1.2.0
+dateparser==1.2.0
 streamlit
 jinja2==3.1.4
 watchdog==4.0.1
