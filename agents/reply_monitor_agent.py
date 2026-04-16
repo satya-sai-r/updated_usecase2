@@ -191,7 +191,7 @@ def poll_imap(queue: list):
         if mail:
             try:
                 mail.logout()
-            except:
+            except (imaplib.IMAP4.error, ConnectionError, OSError):
                 pass
 
 async def poll_imap_with_retry(queue: list, max_retries=3):

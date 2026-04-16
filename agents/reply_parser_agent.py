@@ -44,7 +44,7 @@ def parse_reply(text: str) -> dict:
                     res['days'] = round(val['normalized']['value'] / 86400)
             if e['dim'] == 'amount-of-money': 
                 res['amount'] = e['value']['value']
-    except:
+    except (requests.RequestException, KeyError, ValueError):
         pass
     
     # 2. Fallback to dateparser if date/days not found

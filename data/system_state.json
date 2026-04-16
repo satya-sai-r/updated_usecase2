@@ -852,7 +852,7 @@
     "reply_status": true,
     "replied_at": "2026-04-07T13:55:31+05:30",
     "reply_content": "I will pay in 10 days",
-    "promised_date": "2026-04-18"
+    "promised_date": "2026-04-26"
   },
   "17137": {
     "distributor_id": "D02",
@@ -43222,9 +43222,12 @@
     "sku_name": "MALKIST CHEESE  48 PCS X 72",
     "transaction_date": "2026-03-29",
     "net_value": 101783.85,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "Pay in 13 days",
+    "mail_sent_at": "2026-04-16T16:44:25.254492+05:30",
+    "replied_at": "2026-04-16T16:44:45+05:30",
+    "promised_date": "2026-04-29"
   },
   "1888": {
     "distributor_id": "D05",
@@ -43322,9 +43325,12 @@
     "sku_name": "MALKIST CHEESE  G",
     "transaction_date": "2026-03-30",
     "net_value": 101783.85,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "Will on 12 may",
+    "mail_sent_at": "2026-04-16T16:33:03.239391+05:30",
+    "replied_at": "2026-04-16T16:40:30+05:30",
+    "promised_date": "2026-05-12"
   },
   "3860": {
     "distributor_id": "D05",
@@ -43712,9 +43718,10 @@
     "sku_name": "MALKIST CHEESE  FAMILY 10",
     "transaction_date": "2026-03-31",
     "net_value": 381689.4375,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-16T16:29:07.910963+05:30"
   },
   "5847": {
     "distributor_id": "D05",
@@ -54597,9 +54604,12 @@
     "sku_name": "MALKIST SUGAR GB",
     "transaction_date": "2026-03-21",
     "net_value": 193389.315,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "Pay in 11 days",
+    "mail_sent_at": "2026-04-16T16:58:55.569306+05:30",
+    "replied_at": "2026-04-16T16:59:32+05:30",
+    "promised_date": "2026-04-27"
   },
   "16737": {
     "distributor_id": "D01",
@@ -77756,9 +77766,10 @@
     "sku_name": "MALKIST SUGAR GB",
     "transaction_date": "2026-03-31",
     "net_value": 193389.315,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-16T16:51:37.110328+05:30"
   },
   "16802": {
     "distributor_id": "D01",
@@ -78958,9 +78969,9 @@
     "net_value": 340975.8975,
     "mail_status": true,
     "reply_status": true,
-    "reply_content": "I will pay in 19 days",
-    "replied_at": "2026-04-07T15:12:00+05:30",
-    "promised_date": "2026-05-04"
+    "reply_content": "I will pay in 10 days",
+    "replied_at": "2026-04-07T15:07:02+05:30",
+    "promised_date": "2026-04-26"
   },
   "18253": {
     "distributor_id": "D03",
