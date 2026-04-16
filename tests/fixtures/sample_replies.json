@@ -1,0 +1,22 @@
+[
+  {
+    "input": "I will pay the amount in 15 days",
+    "expected": {"days": 15}
+  },
+  {
+    "input": "Payment will be done by 25th March 2025",
+    "expected": {"date": "2025-03-25"}
+  },
+  {
+    "input": "Please give me 2 weeks to arrange payment",
+    "expected": {"days": 14}
+  },
+  {
+    "input": "The payment of Rs. 1230 will be cleared by 10 April",
+    "expected": {"date": "2025-04-10", "amount": 1230}
+  },
+  {
+    "input": "random unrelated text with no dates or amounts",
+    "expected": {}
+  }
+]

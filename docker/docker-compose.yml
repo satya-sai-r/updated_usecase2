@@ -1,0 +1,61 @@
+services:
+
+  # Application database — YOUR data only.
+  # DO NOT share this instance with Temporal when you upgrade to production.
+  # Temporal requires its own separate postgres service and its own named volume.
+  # See Section 15 for the correct two-Postgres production docker-compose.
+  postgres:
+    image: postgres:16-alpine
+    container_name: payment-postgres
+    environment:
+      POSTGRES_DB: payment_agent
+      POSTGRES_USER: agent
+      POSTGRES_PASSWORD: agentpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+    mem_limit: 256m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agent -d payment_agent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nats:
+    image: nats:2.10-alpine
+    container_name: payment-nats
+    command: ["-js", "-m", "8222", "--store_dir", "/data"]
+    ports:
+      - "4222:4222"   # client connections
+      - "8222:8222"   # monitoring HTTP UI
+    volumes:
+      - natsdata:/data
+    mem_limit: 64m
+    restart: unless-stopped
+
+  duckling:
+    image: rasa/duckling
+    container_name: payment-duckling
+    ports:
+      - "8000:8000"
+    mem_limit: 256m
+    restart: unless-stopped
+
+  # Local dev email sandbox ONLY.
+  # Replace with Postal in production — but configure SPF/DKIM/rDNS first.
+  # See Section 14.3 for mandatory Postal DNS setup before sending real emails.
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: payment-mailpit
+    ports:
+      - "1025:1025"   # SMTP — agents send here
+      - "8025:8025"   # Web UI — view sent emails at http://localhost:8025
+    mem_limit: 32m
+    restart: unless-stopped
+
+volumes:
+  pgdata:    # application data — never share with Temporal
+  natsdata:
