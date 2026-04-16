@@ -6255,11 +6255,9 @@
     "sku_name": "KOPIKO CAPPU EXTRA",
     "transaction_date": "2026-03-27",
     "net_value": 127229.8125,
-    "mail_status": true,
-    "reply_status": true,
-    "reply_content": "I won\u2019t pay",
-    "mail_sent_at": "2026-04-16T09:45:51.375442",
-    "replied_at": "2026-04-16T15:16:05+05:30"
+    "mail_status": false,
+    "reply_status": false,
+    "reply_content": null
   },
   "11819": {
     "distributor_id": "D02",
@@ -23011,12 +23009,9 @@
     "sku_name": "MALKIST SUGAR CRACKERS",
     "transaction_date": "2026-03-31",
     "net_value": 340975.8975,
-    "mail_status": true,
-    "reply_status": true,
-    "reply_content": "Pay in 12 days",
-    "mail_sent_at": "2026-04-16T09:48:02.007764",
-    "replied_at": "2026-04-16T15:18:29+05:30",
-    "promised_date": "2026-04-28"
+    "mail_status": false,
+    "reply_status": false,
+    "reply_content": null
   },
   "5344": {
     "distributor_id": "D04",
@@ -54382,11 +54377,9 @@
     "transaction_date": "2026-03-13",
     "net_value": 101783.85,
     "mail_status": true,
-    "reply_status": true,
-    "reply_content": "Pay half in 10 days and remaining in 20 days",
-    "mail_sent_at": "2026-04-16T15:05:55.566774+05:30",
-    "replied_at": "2026-04-16T15:06:51+05:30",
-    "promised_date": "2026-05-06"
+    "reply_status": false,
+    "reply_content": null,
+    "mail_sent_at": "2026-04-16T15:05:55.566774+05:30"
   },
   "2759": {
     "distributor_id": "D01",

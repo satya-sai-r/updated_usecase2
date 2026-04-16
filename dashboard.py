@@ -197,7 +197,7 @@ st.subheader("📥 Incoming Feed")
 replies = df[df['reply_status'] == True].sort_values(by='replied_at', ascending=False)
 if not replies.empty:
     # user needs: transaction_id, distributor_id, retailer_id, when the mail was sent, reply_content, date of reply
-    feed_cols = ['transaction_date','txn_id', 'distributor_id', 'retailer_id', 'mail_sent_at', 'reply_content', 'replied_at']
+    feed_cols = ['transaction_date','txn_id', 'distributor_id', 'retailer_id', 'mail_sent_at', 'reply_content','promised_date', 'replied_at']
     
     st.dataframe(
         replies[feed_cols],
@@ -206,9 +206,10 @@ if not replies.empty:
             "txn_id": "Transaction ID",
             "distributor_id": "Distributor ID",
             "retailer_id": "Retailer ID",
-            "mail_sent_at": st.column_config.DatetimeColumn("When the mail was sent", format="D MMM YYYY, h:mm a"),
+            "mail_sent_at": st.column_config.DatetimeColumn("mail sent at", format="D MMM YYYY, h:mm a"),
             "reply_content": "Reply content",
-            "replied_at": st.column_config.DatetimeColumn("Date of reply", format="dddd, D MMM YYYY, h:mm a")
+            "promised_date": st.column_config.DateColumn("Pay Date", disabled=True),
+            "replied_at": st.column_config.DatetimeColumn("replied at", format="dddd, D MMM YYYY, h:mm a")
         },
         width="stretch",
         hide_index=True
