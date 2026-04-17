@@ -852,7 +852,7 @@
     "reply_status": true,
     "replied_at": "2026-04-07T13:55:31+05:30",
     "reply_content": "I will pay in 10 days",
-    "promised_date": "2026-04-26"
+    "promised_date": "2026-04-27"
   },
   "17137": {
     "distributor_id": "D02",
@@ -15163,9 +15163,12 @@
     "sku_name": "MALKIST SUGAR GB",
     "transaction_date": "2026-03-31",
     "net_value": 193389.315,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "Hi, I will pay in 10 days Thank you.",
+    "mail_sent_at": "2026-04-17T12:02:00.679013+05:30",
+    "replied_at": "2026-04-17T12:13:33+05:30",
+    "promised_date": "2026-04-26"
   },
   "17150": {
     "distributor_id": "D02",
@@ -51719,9 +51722,12 @@
     "sku_name": "MALKIST CHEESE  FAMILY 10",
     "transaction_date": "2026-03-31",
     "net_value": 381689.4375,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay on next Friday",
+    "mail_sent_at": "2026-04-17T12:28:05.951923+05:30",
+    "replied_at": "2026-04-17T12:29:41+05:30",
+    "promised_date": "2026-04-24"
   },
   "5855": {
     "distributor_id": "D05",
@@ -53843,9 +53849,12 @@
     "sku_name": "KOPIKO CAPPUCCINO",
     "transaction_date": "2026-03-10",
     "net_value": 25445.9625,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay half in 5 days and remaining in next 13 days",
+    "mail_sent_at": "2026-04-17T14:28:32.497542+05:30",
+    "replied_at": "2026-04-17T14:29:51+05:30",
+    "promised_date": "2026-05-05"
   },
   "15441": {
     "distributor_id": "D01",
@@ -53963,9 +53972,12 @@
     "sku_name": "BENG BENG WAFER 22GM",
     "transaction_date": "2026-03-25",
     "net_value": 76337.8875,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "Paid on 12th April",
+    "mail_sent_at": "2026-04-17T11:25:08.749157+05:30",
+    "replied_at": "2026-04-17T11:26:13+05:30",
+    "promised_date": "2026-04-12"
   },
   "13561": {
     "distributor_id": "D01",
@@ -55080,9 +55092,12 @@
     "sku_name": "BENG BENG WAFER 22GM",
     "transaction_date": "2026-03-25",
     "net_value": 76337.8875,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay remaining amount in next week",
+    "mail_sent_at": "2026-04-17T16:02:11.752007+05:30",
+    "replied_at": "2026-04-17T16:04:42+05:30",
+    "promised_date": "2026-04-20"
   },
   "13562": {
     "distributor_id": "D01",
@@ -55520,9 +55535,12 @@
     "sku_name": "MALKIST CHEESE  G",
     "transaction_date": "2026-03-23",
     "net_value": 101783.85,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay half on 23 April and remaining in next 10 days",
+    "mail_sent_at": "2026-04-17T16:07:20.950017+05:30",
+    "replied_at": "2026-04-17T16:09:32+05:30",
+    "promised_date": "2026-05-02"
   },
   "11222": {
     "distributor_id": "D01",
@@ -55960,9 +55978,10 @@
     "sku_name": "MALKIST CHEESE  FAMILY 10",
     "transaction_date": "2026-03-24",
     "net_value": 381689.4375,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-17T15:35:09.894101+05:30"
   },
   "15223": {
     "distributor_id": "D01",
@@ -56070,9 +56089,12 @@
     "sku_name": "KOPIKO CAPPUCCINO",
     "transaction_date": "2026-03-30",
     "net_value": 25445.9625,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "Pay half in 3 days and remaining in next 12 days",
+    "mail_sent_at": "2026-04-17T14:45:12.804466+05:30",
+    "replied_at": "2026-04-17T14:45:44+05:30",
+    "promised_date": "2026-05-02"
   },
   "7303": {
     "distributor_id": "D01",
@@ -56180,9 +56202,11 @@
     "sku_name": "BENG BENG WAFER 22GM",
     "transaction_date": "2026-03-25",
     "net_value": 76337.8875,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "Pay before the month ends",
+    "mail_sent_at": "2026-04-17T15:06:32.880809+05:30",
+    "replied_at": "2026-04-17T15:07:09+05:30"
   },
   "13563": {
     "distributor_id": "D01",
@@ -56290,9 +56314,12 @@
     "sku_name": "KOPIKO CAPPU + MALKIST",
     "transaction_date": "2026-03-29",
     "net_value": 76337.8875,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "Pay half in 8 days and remaining in next 6 days",
+    "mail_sent_at": "2026-04-17T14:38:08.473184+05:30",
+    "replied_at": "2026-04-17T14:38:49+05:30",
+    "promised_date": "2026-05-01"
   },
   "9303": {
     "distributor_id": "D01",
@@ -56400,9 +56427,12 @@
     "sku_name": "BENG BENG WAFER GB",
     "transaction_date": "2026-03-27",
     "net_value": 91605.465,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay half in 4 days and remaining in next 12 days",
+    "mail_sent_at": "2026-04-17T14:53:18.099020+05:30",
+    "replied_at": "2026-04-17T14:54:13+05:30",
+    "promised_date": "2026-05-03"
   },
   "591": {
     "distributor_id": "D01",
@@ -56730,9 +56760,12 @@
     "sku_name": "KOPIKO CAPPU EXTRA",
     "transaction_date": "2026-03-28",
     "net_value": 127229.8125,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will half in 10 days and remaining payment will be done in next 13 days",
+    "mail_sent_at": "2026-04-17T13:34:53.557137+05:30",
+    "replied_at": "2026-04-17T13:36:41+05:30",
+    "promised_date": "2026-04-27"
   },
   "16563": {
     "distributor_id": "D01",
@@ -78971,7 +79004,7 @@
     "reply_status": true,
     "reply_content": "I will pay in 10 days",
     "replied_at": "2026-04-07T15:07:02+05:30",
-    "promised_date": "2026-04-26"
+    "promised_date": "2026-04-27"
   },
   "18253": {
     "distributor_id": "D03",
