@@ -36,13 +36,15 @@ def extract_day_durations_with_context(text: str) -> list[tuple[int, bool]]:
     matches = re.findall(pattern, text, re.IGNORECASE)
     return [(int(days), bool(next_keyword)) for next_keyword, days in matches]
 
-def extract_absolute_date(text: str, received_at_str: str) -> int | None:
-    """Extract absolute dates like 'on 27 april' and convert to days from now.
+def extract_absolute_date(text: str, received_at_str: str) -> str | None:
+    """Extract absolute dates like 'on 27 april' or 'on 29 April 2026' and return the date string.
     
-    Returns days from received_at to the absolute date, or None if not found.
+    Returns date string like '2026-04-30', or None if not found.
     """
-    # Pattern: "on 27 april" or "on April 27" or "on 27/04" or "on 27-04"
+    # Pattern: "on 27 april" or "on April 27" or "on 27/04" or "on 27-04" or "on 29 April 2026"
     patterns = [
+        r"on\s+(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+(\d{4})",  # "on 29 april 2026"
+        r"on\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+(\d{1,2}),?\s+(\d{4})",  # "on april 29, 2026" or "on april 29 2026"
         r"on\s+(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*",  # "on 27 april"
         r"on\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+(\d{1,2})",  # "on april 27"
         r"on\s+(\d{1,2})[/-](\d{1,2})",  # "on 27/04" or "on 27-04"
@@ -55,12 +57,41 @@ def extract_absolute_date(text: str, received_at_str: str) -> int | None:
         match = re.search(pattern, text_lower)
         if match:
             try:
-                if len(match.groups()) == 2:
+                if len(match.groups()) == 3:
+                    # Format with year: "on 29 april 2026" or "on april 29, 2026"
+                    if match.group(2).isdigit():
+                        # DD MM YYYY format: on 29 04 2026
+                        day = int(match.group(1))
+                        month = int(match.group(2))
+                        year = int(match.group(3))
+                    else:
+                        # Month name format with year
+                        month_str = match.group(2)[:3].lower()
+                        month_map = {
+                            'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
+                            'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12
+                        }
+                        month = month_map.get(month_str, 0)
+                        day = int(match.group(1)) if match.group(1).isdigit() else int(match.group(2))
+                        year = int(match.group(3))
+                    
+                    if month > 0 and 1 <= day <= 31:
+                        received_dt = datetime.fromisoformat(received_at_str)
+                        target_date = datetime(year, month, day, tzinfo=received_dt.tzinfo)
+                        
+                        # If date is in the past, assume next year
+                        if target_date < received_dt:
+                            target_date = datetime(current_year + 1, month, day,
+                                                   tzinfo=received_dt.tzinfo)
+                        
+                        return target_date.strftime("%Y-%m-%d")
+                        
+                elif len(match.groups()) == 2:
                     if match.group(2).isdigit():
                         # DD/MM format: on 27/04
                         day, month = int(match.group(1)), int(match.group(2))
                     else:
-                        # Month name format
+                        # Month name format without year
                         month_str = match.group(2)[:3].lower()
                         month_map = {
                             'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
@@ -79,8 +110,7 @@ def extract_absolute_date(text: str, received_at_str: str) -> int | None:
                             target_date = datetime(current_year + 1, month, day,
                                                    tzinfo=received_dt.tzinfo)
                         
-                        delta = target_date - received_dt
-                        return delta.days
+                        return target_date.strftime("%Y-%m-%d")
             except (ValueError, AttributeError):
                 continue
     
@@ -88,7 +118,7 @@ def extract_absolute_date(text: str, received_at_str: str) -> int | None:
 
 def has_absolute_date_pattern(text: str) -> bool:
     """Check if text contains 'on [date]' pattern."""
-    pattern = r"on\s+(\d{1,2}\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)|\d{1,2}[/-]\d{1,2})"
+    pattern = r"on\s+(\d{1,2}\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(?:\s+\d{4})?|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+\d{1,2},?\s*\d{4}?|\d{1,2}[/-]\d{1,2})"
     return bool(re.search(pattern, text.lower()))
 
 def extract_month_end_date(text: str, received_at_str: str) -> int | None:
@@ -368,7 +398,13 @@ def parse_reply(text: str) -> dict:
         else:
             res['days'] = days_with_context[0][0]
     
-    # 3. Fallback to dateparser if no days found
+    # 3. Check for absolute date patterns (on 30 April 2026)
+    if 'date' not in res and 'days' not in res:
+        # Need received_at_str for absolute date calculation
+        # This will be handled in the main function where we have access to received_at
+        res['has_absolute_date'] = has_absolute_date_pattern(text)
+    
+    # 4. Fallback to dateparser if no days found
     if 'date' not in res and 'days' not in res:
         parsed_date = dateparser.parse(text, settings={'PREFER_DATES_FROM': 'future'})
         if parsed_date:
@@ -429,6 +465,15 @@ async def main():
                             parsed['days'] = eow_days
                             parsed['has_end_of_week'] = True
                             log.info(f"End-of-week pattern detected: pay in {eow_days} days")
+                
+                # Handle absolute date patterns (on 30 April 2026)
+                if parsed.get('has_absolute_date') or has_absolute_date_pattern(body):
+                    if 'date' not in parsed and 'days' not in parsed:
+                        abs_date = extract_absolute_date(body, received_at_str)
+                        if abs_date is not None:
+                            parsed['date'] = abs_date
+                            parsed['has_absolute_date'] = True
+                            log.info(f"Absolute date pattern detected: pay on {abs_date}")
                 
                 # Handle multiple installments (3+ payments)
                 if has_installment_pattern(body):

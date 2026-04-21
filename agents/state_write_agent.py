@@ -106,7 +106,7 @@ def update_json_state(txn_id, raw_body=None, received_at=None, promised_date=Non
     """Legacy wrapper - now uses retry-enabled version."""
     return update_json_state_with_retry(txn_id, raw_body, received_at, promised_date, mail_sent_at)
 
-async def update_db_sent(txn_id, sent_at, db):
+async def update_db_sent(txn_id, sent_at, db, is_escalation=False, is_warning=False):
     try:
         # First verify transaction exists
         result = await db.execute("""
@@ -116,20 +116,75 @@ async def update_db_sent(txn_id, sent_at, db):
         count = await result.fetchone()
         
         if count[0] == 0:
-            log.warning(f"Transaction {txn_id} not found in database - skipping update")
-            return
-        
-        # Update the transaction
-        await db.execute("""
-            UPDATE transactions 
-            SET reminder_sent_at = %s, reminder_count = reminder_count + 1
-            WHERE secondary_transaction_id = %s
-        """, (sent_at, txn_id))
-        await db.commit()
-        log.info(f"Database updated for Txn: {txn_id}")
+            # Transaction doesn't exist in database - need to insert it from JSON state
+            log.warning(f"Transaction {txn_id} not found in database - attempting to insert from state")
+            
+            # Load transaction data from JSON state
+            state = load_json_state()
+            if txn_id not in state:
+                log.error(f"Transaction {txn_id} not found in JSON state either - cannot insert")
+                return
+            
+            txn_data = state[txn_id]
+            
+            # Insert transaction into database
+            await db.execute("""
+                INSERT INTO transactions (
+                    secondary_transaction_id, retailer_id, distributor_id,
+                    sku_name, product_category_snapshot, transaction_date,
+                    secondary_gross_value, secondary_tax_amount, secondary_net_value,
+                    reminder_sent_at, reminder_count
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 1)
+            """, (
+                txn_id,
+                txn_data.get('retailer_id', ''),
+                txn_data.get('distributor_id', ''),
+                txn_data.get('sku_name', ''),
+                txn_data.get('product_category_snapshot', ''),
+                txn_data.get('transaction_date', ''),
+                txn_data.get('net_value', 0),
+                0,  # tax amount
+                txn_data.get('net_value', 0),
+                sent_at
+            ))
+            await db.commit()
+            log.info(f"Transaction {txn_id} inserted into database")
+        else:
+            # Transaction exists - update it based on email type
+            if is_warning:
+                await db.execute("""
+                    UPDATE transactions 
+                    SET warning_sent_at = %s
+                    WHERE secondary_transaction_id = %s
+                """, (sent_at, txn_id))
+                await db.commit()
+                log.info(f"Database updated with warning_sent_at for Txn: {txn_id}")
+            elif is_escalation:
+                await db.execute("""
+                    UPDATE transactions 
+                    SET escalation_sent_at = %s
+                    WHERE secondary_transaction_id = %s
+                """, (sent_at, txn_id))
+                await db.commit()
+                log.info(f"Database updated with escalation_sent_at for Txn: {txn_id}")
+            else:
+                await db.execute("""
+                    UPDATE transactions 
+                    SET reminder_sent_at = %s, reminder_count = reminder_count + 1
+                    WHERE secondary_transaction_id = %s
+                """, (sent_at, txn_id))
+                await db.commit()
+                log.info(f"Database updated for Txn: {txn_id}")
     except Exception as e:
         log.error(f"DB update sent error: {e}")
         await db.rollback()
+
+def load_json_state():
+    """Load JSON state file."""
+    if not os.path.exists(STATE_FILE):
+        return {}
+    with open(STATE_FILE, "r") as f:
+        return json.load(f)
 
 def append_to_excel(data: dict):
     dist_id = data.get("distributor_id", "Unknown")
@@ -188,8 +243,10 @@ async def main():
                     data = json.loads(msg.data)
                     txn_id = data.get("transaction_id")
                     sent_at = data.get("sent_at")
+                    is_escalation = data.get("escalation", False)
+                    is_warning = data.get("warning", False)
                     update_json_state(txn_id, mail_sent_at=sent_at)
-                    await update_db_sent(txn_id, sent_at, db)
+                    await update_db_sent(txn_id, sent_at, db, is_escalation=is_escalation, is_warning=is_warning)
                 except Exception as e:
                     log.error(f"State Sent Error: {e}")
 

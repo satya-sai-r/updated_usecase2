@@ -104,7 +104,7 @@ IMAP_PASS=admin
 
 # Retailer Email Mapping (JSON format)
 RETAILER_EMAIL_MAP={"R001": "retailer1@example.com", "R002": "retailer2@example.com"}
-DEFAULT_RECIPIENT=spuvvala@gitam.in
+DEFAULT_RECIPIENT=noreply1@example.com
 ```
 
 ---

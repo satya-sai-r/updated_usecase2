@@ -45,13 +45,14 @@ def poll_imap(queue: list):
         mail.login(IMAP_USER, IMAP_PASS)
         mail.select("INBOX")
         
-        _, msg_ids = mail.search(None, '(SUBJECT "Payment Reminder")')
+        # Search for "Payment Reminder", "ESCALATION", and "WARNING" in subject
+        _, msg_ids = mail.search(None, '(OR SUBJECT "Payment Reminder" (OR SUBJECT "ESCALATION" SUBJECT "WARNING"))')
         if msg_ids[0] is None:
-            log.info("No messages found matching 'Payment Reminder'")
+            log.info("No messages found matching 'Payment Reminder', 'ESCALATION', or 'WARNING'")
             return
             
         id_list = msg_ids[0].split()
-        log.info(f"Found {len(id_list)} messages matching 'Payment Reminder'")
+        log.info(f"Found {len(id_list)} messages matching 'Payment Reminder', 'ESCALATION', or 'WARNING'")
         
         processed_count = 0
         for msg_id in id_list:

@@ -64,6 +64,9 @@ def send_email(to_addr: str, subject: str, html_body: str) -> bool:
 
 async def handle_reminder(payload: dict, nc) -> None:
     txn_id = payload["secondary_transaction_id"]
+    is_escalation = payload.get("escalation", False)
+    is_warning = payload.get("warning", False)
+    reminder_count = payload.get("reminder_count", 0)
     state = load_state()
     
     if txn_id not in state:
@@ -73,7 +76,16 @@ async def handle_reminder(payload: dict, nc) -> None:
     data = state[txn_id]
     to_addr = RETAILER_MAP.get(data['retailer_id'], DEFAULT_RECIPIENT)
     
-    template = jinja.get_template("reminder_email.html")
+    # Use warning template if warning flag is set, escalation template if escalation flag is set
+    if is_warning:
+        template = jinja.get_template("warning_email.html")
+        subject = f"⚠️ FINAL WARNING: Supply Suspension Notice — {data['distributor_id']} — {data['transaction_date']} [{txn_id}]"
+    elif is_escalation:
+        template = jinja.get_template("escalation_email.html")
+        subject = f"⚠️ ESCALATION: Payment Follow-up — {data['distributor_id']} — {data['transaction_date']} [{txn_id}]"
+    else:
+        template = jinja.get_template("reminder_email.html")
+        subject = f"Payment Reminder — {data['distributor_id']} — {data['transaction_date']} [{txn_id}]"
     
     # Construct a single item from the state data
     items = [{
@@ -94,13 +106,22 @@ async def handle_reminder(payload: dict, nc) -> None:
         transaction_id=txn_id
     )
     
-    subject = f"Payment Reminder — {data['distributor_id']} — {data['transaction_date']} [{txn_id}]"
+    if is_warning:
+        email_type = "WARNING"
+    elif is_escalation:
+        email_type = "ESCALATION"
+    else:
+        email_type = "REMINDER"
+    
     if send_email(to_addr, subject, html):
-        log.info(f"SUCCESS: Email sent for {txn_id} to {to_addr}")
+        log.info(f"SUCCESS: {email_type} email sent for {txn_id} to {to_addr} (attempt #{reminder_count + 1})")
         # Notify that email was sent to update state/db
         sent_payload = {
             "transaction_id": txn_id,
-            "sent_at": datetime.now(IST).isoformat()
+            "sent_at": datetime.now(IST).isoformat(),
+            "escalation": is_escalation,
+            "warning": is_warning,
+            "reminder_count": reminder_count + 1
         }
         await nc.publish("reminder.sent", json.dumps(sent_payload).encode())
     else:

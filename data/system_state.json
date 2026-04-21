@@ -527,9 +527,10 @@
     "sku_name": "MALKIST CHEESE  48 PCS X 72",
     "transaction_date": "2026-03-25",
     "net_value": 101783.85,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T13:26:20.015397+05:30"
   },
   "1182": {
     "distributor_id": "D02",
@@ -852,7 +853,7 @@
     "reply_status": true,
     "replied_at": "2026-04-07T13:55:31+05:30",
     "reply_content": "I will pay in 10 days",
-    "promised_date": "2026-04-27"
+    "promised_date": "2026-04-17"
   },
   "17137": {
     "distributor_id": "D02",
@@ -15168,7 +15169,7 @@
     "reply_content": "Hi, I will pay in 10 days Thank you.",
     "mail_sent_at": "2026-04-17T12:02:00.679013+05:30",
     "replied_at": "2026-04-17T12:13:33+05:30",
-    "promised_date": "2026-04-26"
+    "promised_date": "2026-04-27"
   },
   "17150": {
     "distributor_id": "D02",
@@ -25179,9 +25180,12 @@
     "sku_name": "MALKIST SUGAR CRACKERS",
     "transaction_date": "2026-03-31",
     "net_value": 340975.8975,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay on 27 April 2026",
+    "mail_sent_at": "2026-04-21T15:05:47.361270+05:30",
+    "replied_at": "2026-04-21T14:56:19+05:30",
+    "promised_date": "2026-04-27"
   },
   "19146": {
     "distributor_id": "D04",
@@ -26279,9 +26283,10 @@
     "sku_name": "MALKIST SUGAR CRACKERS",
     "transaction_date": "2026-03-31",
     "net_value": 340975.8975,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T16:03:02.732766+05:30"
   },
   "19147": {
     "distributor_id": "D04",
@@ -47722,9 +47727,12 @@
     "sku_name": "MALKIST CHEESE  FAMILY 10",
     "transaction_date": "2026-03-31",
     "net_value": 381689.4375,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay my remaining amount on 26 April 2026",
+    "mail_sent_at": "2026-04-21T17:31:53.838420+05:30",
+    "replied_at": "2026-04-21T17:32:32+05:30",
+    "promised_date": "2026-04-26"
   },
   "5851": {
     "distributor_id": "D05",
@@ -49722,9 +49730,10 @@
     "sku_name": "MALKIST CHEESE  FAMILY 10",
     "transaction_date": "2026-03-31",
     "net_value": 381689.4375,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T17:41:40.176819+05:30"
   },
   "5853": {
     "distributor_id": "D05",
@@ -53912,9 +53921,10 @@
     "sku_name": "BENG BENG WAFER 22GM",
     "transaction_date": "2026-02-23",
     "net_value": 74897.55,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T11:54:05.967238+05:30"
   },
   "7411": {
     "distributor_id": "D01",
@@ -54025,9 +54035,12 @@
     "sku_name": "KOPIKO CAPPU + MALKIST",
     "transaction_date": "2026-02-27",
     "net_value": 74897.55,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay back on 30 April 2026",
+    "mail_sent_at": "2026-04-21T11:38:04.865322+05:30",
+    "replied_at": "2026-04-21T11:38:23+05:30",
+    "promised_date": "2026-04-30"
   },
   "13671": {
     "distributor_id": "D01",
@@ -54035,9 +54048,10 @@
     "sku_name": "KOPIKO CAPPU + MALKIST",
     "transaction_date": "2026-02-17",
     "net_value": 74897.55,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T12:24:47.165024+05:30"
   },
   "13693": {
     "distributor_id": "D01",
@@ -54055,9 +54069,12 @@
     "sku_name": "KOPIKO CAPPU + MALKIST",
     "transaction_date": "2026-02-27",
     "net_value": 74897.55,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay back on 30 April 2026",
+    "mail_sent_at": "2026-04-21T11:46:43.646262+05:30",
+    "replied_at": "2026-04-21T11:47:21+05:30",
+    "promised_date": "2026-04-30"
   },
   "13737": {
     "distributor_id": "D01",
@@ -54098,9 +54115,10 @@
     "sku_name": "BENG BENG WAFER GB",
     "transaction_date": "2026-01-07",
     "net_value": 88148.655,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T16:53:41.348857+05:30"
   },
   "9323": {
     "distributor_id": "D01",
@@ -54148,9 +54166,10 @@
     "sku_name": "BENG BENG WAFER GB",
     "transaction_date": "2026-02-15",
     "net_value": 89877.06,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T12:45:14.692312+05:30"
   },
   "9433": {
     "distributor_id": "D01",
@@ -54270,9 +54289,10 @@
     "sku_name": "MALKIST CHEESE  48 PCS X 72",
     "transaction_date": "2026-02-10",
     "net_value": 99863.4,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T16:24:43.458362+05:30"
   },
   "743": {
     "distributor_id": "D01",
@@ -54290,9 +54310,11 @@
     "sku_name": "MALKIST CHEESE  48 PCS X 72",
     "transaction_date": "2026-03-12",
     "net_value": 101783.85,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay remaining amount in 25 April 2026",
+    "mail_sent_at": "2026-04-21T11:14:54.907892+05:30",
+    "replied_at": "2026-04-21T11:15:43+05:30"
   },
   "787": {
     "distributor_id": "D01",
@@ -54463,9 +54485,12 @@
     "sku_name": "KOPIKO CAPPU EXTRA",
     "transaction_date": "2026-01-07",
     "net_value": 122428.6875,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay back on 25 April 2026",
+    "mail_sent_at": "2026-04-21T16:48:41.445872+05:30",
+    "replied_at": "2026-04-21T16:51:35+05:30",
+    "promised_date": "2026-04-25"
   },
   "11309": {
     "distributor_id": "D01",
@@ -54513,9 +54538,11 @@
     "sku_name": "KOPIKO CAPPU EXTRA",
     "transaction_date": "2026-03-18",
     "net_value": 127229.8125,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay back on 3rd may 2026",
+    "mail_sent_at": "2026-04-21T11:58:50.030157+05:30",
+    "replied_at": "2026-04-21T11:59:15+05:30"
   },
   "11419": {
     "distributor_id": "D01",
@@ -54749,9 +54776,12 @@
     "sku_name": "MALKIST SUGAR CRACKERS",
     "transaction_date": "2026-03-12",
     "net_value": 340975.8975,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay back on 29 April 2026",
+    "mail_sent_at": "2026-04-21T11:27:45.849518+05:30",
+    "replied_at": "2026-04-21T11:28:09+05:30",
+    "promised_date": "2026-04-29"
   },
   "18781": {
     "distributor_id": "D01",
@@ -54759,9 +54789,12 @@
     "sku_name": "MALKIST SUGAR CRACKERS",
     "transaction_date": "2026-03-02",
     "net_value": 340975.8975,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay back on 27 April 2026",
+    "mail_sent_at": "2026-04-21T12:05:15.182382+05:30",
+    "replied_at": "2026-04-21T12:06:21+05:30",
+    "promised_date": "2026-04-27"
   },
   "4561": {
     "distributor_id": "D01",
@@ -59065,8 +59098,8 @@
     "net_value": 193389.315,
     "mail_status": false,
     "reply_status": true,
-    "reply_content": "Paid on 6th April",
-    "replied_at": "2026-04-08T12:27:07+05:30",
+    "reply_content": "Paid.on 7th April",
+    "replied_at": "2026-04-08T12:26:16+05:30",
     "promised_date": "2026-04-06"
   },
   "16785": {
@@ -59515,9 +59548,12 @@
     "sku_name": "BENG BENG WAFER 22GM",
     "transaction_date": "2026-03-25",
     "net_value": 76337.8875,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay on 28 April 2026",
+    "mail_sent_at": "2026-04-21T13:55:47.537436+05:30",
+    "replied_at": "2026-04-21T13:46:26+05:30",
+    "promised_date": "2026-04-28"
   },
   "13566": {
     "distributor_id": "D01",
@@ -59845,9 +59881,10 @@
     "sku_name": "MALKIST CHEESE  48 PCS X 72",
     "transaction_date": "2026-03-22",
     "net_value": 101783.85,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T13:55:51.353447+05:30"
   },
   "2566": {
     "distributor_id": "D01",
@@ -67885,9 +67922,12 @@
     "sku_name": "MALKIST SUGAR GB",
     "transaction_date": "2026-03-31",
     "net_value": 193389.315,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay back on 30 April 2026",
+    "mail_sent_at": "2026-04-21T16:03:06.510349+05:30",
+    "replied_at": "2026-04-21T16:00:14+05:30",
+    "promised_date": "2026-04-30"
   },
   "16793": {
     "distributor_id": "D01",
@@ -78030,9 +78070,10 @@
     "sku_name": "MALKIST CHEESE  FAMILY 10",
     "transaction_date": "2026-03-24",
     "net_value": 381689.4375,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T16:17:13.387121+05:30"
   },
   "14001": {
     "distributor_id": "D03",
@@ -78131,8 +78172,9 @@
     "transaction_date": "2026-03-29",
     "net_value": 25445.9625,
     "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "reply_status": true,
+    "reply_content": "I will pay back on 3rd May 2026",
+    "replied_at": "2026-04-21T11:56:59+05:30"
   },
   "14281": {
     "distributor_id": "D03",
@@ -79004,7 +79046,7 @@
     "reply_status": true,
     "reply_content": "I will pay in 10 days",
     "replied_at": "2026-04-07T15:07:02+05:30",
-    "promised_date": "2026-04-27"
+    "promised_date": "2026-04-17"
   },
   "18253": {
     "distributor_id": "D03",
@@ -84502,9 +84544,10 @@
     "sku_name": "MALKIST SUGAR CRACKERS",
     "transaction_date": "2026-03-31",
     "net_value": 340975.8975,
-    "mail_status": false,
+    "mail_status": true,
     "reply_status": false,
-    "reply_content": null
+    "reply_content": null,
+    "mail_sent_at": "2026-04-21T13:31:20.069013+05:30"
   },
   "18258": {
     "distributor_id": "D03",

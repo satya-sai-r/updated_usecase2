@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+    th { background: #f0f0f0; text-align: left; padding: 8px 12px; border: 1px solid #ddd; }
+    td { padding: 8px 12px; border: 1px solid #ddd; }
+    .total-row { font-weight: bold; background: #fafafa; }
+    .footer { color: #666; font-size: 12px; margin-top: 24px; }
+    .warning-box { background: #fff3cd; border: 1px solid #ffc107; padding: 12px; margin: 16px 0; border-radius: 4px; }
+    .escalation-badge { background: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<p>Dear <strong>{{ retailer_id }}</strong>,</p>
+
+<div class="warning-box">
+  <strong>⚠️ ESCALATION NOTICE</strong><br>
+  We have already sent you a payment reminder for the below transaction, but we have not received any response from you.
+</div>
+
+<p>
+  This is a <strong>follow-up reminder</strong> from distributor <strong>{{ distributor_id }}</strong>
+  for purchases made on <strong>{{ transaction_date }}</strong>.
+</p>
+
+<p>We have not received any response to our previous reminder. Please review the details below and respond immediately:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>SKU Name</th>
+      <!-- <th>Gross Value (₹)</th> -->
+      <th>Net Payable (₹)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.sku_name }}</td>
+      <!-- <td>{{ "%.2f"|format(item.secondary_gross_value or 0) }}</td> -->
+      <td>{{ "%.2f"|format(item.secondary_net_value or 0) }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="total-row">
+      <td style="text-align: right;">Total</td>
+      <td>₹{{ "%.2f"|format(total_payable) }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  <strong>Total Payable Amount: ₹{{ "%.2f"|format(total_payable) }}</strong>
+</p>
+
+<p>
+  <strong>⚠️ ACTION REQUIRED:</strong> Please reply to this email immediately with your payment commitment — 
+  either a specific date or the number of days within which payment will be made.
+</p>
+
+<p>
+  <em>Reference: {{ transaction_id }}</em><br>
+  Please include this reference in your reply subject line as:
+  <code>RE: Payment Reminder [{{ transaction_id }}]</code>
+</p>
+
+<p class="footer">
+  This is an automated escalation reminder. Please reply directly to this email.
+</p>
+
+</body>
+</html>
