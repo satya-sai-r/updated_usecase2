@@ -3,6 +3,7 @@ import json
 import logging
 import os
 from datetime import datetime
+from pathlib import Path
 
 import nats
 import psycopg
@@ -24,6 +25,15 @@ log = logging.getLogger(__name__)
 NATS_URL = os.getenv("NATS_URL", "nats://localhost:4222")
 DSN = os.getenv("POSTGRES_DSN")
 WARNING_MINUTES = int(os.getenv("WARNING_MINUTES", "1"))  # 1 minute after escalation
+STATE_FILE = "data/system_state.json"
+
+def load_state():
+    """Load JSON state file."""
+    state_path = Path(STATE_FILE)
+    if not state_path.exists():
+        return {}
+    with open(state_path, "r") as f:
+        return json.load(f)
 
 
 async def run_warning_check() -> None:
@@ -51,17 +61,46 @@ async def run_warning_check() -> None:
         overdue = await rows.fetchall()
         log.info(f"Found {len(overdue)} transactions with no reply {WARNING_MINUTES} minutes after escalation")
 
+        # Load state to check for grouped transactions
+        state = load_state()
+        processed_groups = set()  # Track which groups have been processed
+
         for row in overdue:
             txn_id, retailer_id, dist_id, sent_at, count = row
-            payload = json.dumps({
-                "secondary_transaction_id": txn_id,
-                "retailer_id": retailer_id,
-                "distributor_id": dist_id,
-                "warning": True,
-                "reminder_count": count,
-            })
-            await nc.publish("reminder.due", payload.encode())
-            log.info(f"Warning email triggered for {txn_id} (no reply {WARNING_MINUTES} minutes after escalation)")
+
+            # Check if this transaction is part of a group
+            grouped_txns = state.get(txn_id, {}).get('grouped_transactions', [])
+
+            if grouped_txns:
+                # Check if this group has already been processed
+                group_key = tuple(sorted(grouped_txns))
+                if group_key in processed_groups:
+                    log.info(f"Skipping {txn_id} - group already processed")
+                    continue
+                processed_groups.add(group_key)
+
+                # Send warning for all transactions in the group
+                payload = json.dumps({
+                    "secondary_transaction_id": grouped_txns[0],
+                    "retailer_id": retailer_id,
+                    "distributor_id": dist_id,
+                    "warning": True,
+                    "reminder_count": count,
+                    "additional_transactions": grouped_txns[1:]
+                })
+                await nc.publish("reminder.due", payload.encode())
+                log.info(f"Warning email triggered for group of {len(grouped_txns)} transactions: {', '.join(grouped_txns)} (no reply {WARNING_MINUTES} minutes after escalation)")
+            else:
+                # Send warning for single transaction
+                payload = json.dumps({
+                    "secondary_transaction_id": txn_id,
+                    "retailer_id": retailer_id,
+                    "distributor_id": dist_id,
+                    "warning": True,
+                    "reminder_count": count,
+                })
+                await nc.publish("reminder.due", payload.encode())
+                log.info(f"Warning email triggered for {txn_id} (no reply {WARNING_MINUTES} minutes after escalation)")
 
     await nc.close()
 

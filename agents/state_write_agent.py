@@ -50,7 +50,7 @@ def update_json_state_with_retry(txn_id, raw_body=None, received_at=None, promis
     if not os.path.exists(STATE_FILE):
         log.error(f"State file missing: {STATE_FILE}")
         return False
-    
+
     for attempt in range(max_retries):
         try:
             # Try to acquire exclusive lock on the state file itself
@@ -61,19 +61,35 @@ def update_json_state_with_retry(txn_id, raw_body=None, received_at=None, promis
                     lock_f.seek(0)
                     content = lock_f.read()
                     state = json.loads(content) if content else {}
-                    
+
                     if txn_id not in state:
                         log.warning(f"Txn {txn_id} not found in JSON state during update")
                         return False
-                    
-                    # Update the transaction
-                    if raw_body is not None:
-                        state[txn_id]['reply_status'] = True
-                        state[txn_id]['reply_content'] = raw_body
-                    if received_at is not None:
-                        state[txn_id]['replied_at'] = received_at
-                    if promised_date is not None:
-                        state[txn_id]['promised_date'] = promised_date
+
+                    # Check if this transaction has grouped transactions
+                    grouped_txns = state[txn_id].get('grouped_transactions', [])
+                    if grouped_txns:
+                        log.info(f"Updating reply for grouped transactions: {grouped_txns}")
+                        # Update all transactions in the group
+                        for tid in grouped_txns:
+                            if tid in state:
+                                if raw_body is not None:
+                                    state[tid]['reply_status'] = True
+                                    state[tid]['reply_content'] = raw_body
+                                if received_at is not None:
+                                    state[tid]['replied_at'] = received_at
+                                if promised_date is not None:
+                                    state[tid]['promised_date'] = promised_date
+                                log.info(f"Updated reply for grouped transaction {tid}")
+                    else:
+                        # Update the single transaction
+                        if raw_body is not None:
+                            state[txn_id]['reply_status'] = True
+                            state[txn_id]['reply_content'] = raw_body
+                        if received_at is not None:
+                            state[txn_id]['replied_at'] = received_at
+                        if promised_date is not None:
+                            state[txn_id]['promised_date'] = promised_date
                     if mail_sent_at is not None:
                         state[txn_id]['mail_status'] = True
                         state[txn_id]['mail_sent_at'] = mail_sent_at
@@ -110,23 +126,23 @@ async def update_db_sent(txn_id, sent_at, db, is_escalation=False, is_warning=Fa
     try:
         # First verify transaction exists
         result = await db.execute("""
-            SELECT COUNT(*) as count FROM transactions 
+            SELECT COUNT(*) as count FROM transactions
             WHERE secondary_transaction_id = %s
         """, (txn_id,))
         count = await result.fetchone()
-        
+
         if count[0] == 0:
             # Transaction doesn't exist in database - need to insert it from JSON state
             log.warning(f"Transaction {txn_id} not found in database - attempting to insert from state")
-            
+
             # Load transaction data from JSON state
             state = load_json_state()
             if txn_id not in state:
                 log.error(f"Transaction {txn_id} not found in JSON state either - cannot insert")
                 return
-            
+
             txn_data = state[txn_id]
-            
+
             # Insert transaction into database
             await db.execute("""
                 INSERT INTO transactions (
@@ -153,7 +169,7 @@ async def update_db_sent(txn_id, sent_at, db, is_escalation=False, is_warning=Fa
             # Transaction exists - update it based on email type
             if is_warning:
                 await db.execute("""
-                    UPDATE transactions 
+                    UPDATE transactions
                     SET warning_sent_at = %s
                     WHERE secondary_transaction_id = %s
                 """, (sent_at, txn_id))
@@ -161,7 +177,7 @@ async def update_db_sent(txn_id, sent_at, db, is_escalation=False, is_warning=Fa
                 log.info(f"Database updated with warning_sent_at for Txn: {txn_id}")
             elif is_escalation:
                 await db.execute("""
-                    UPDATE transactions 
+                    UPDATE transactions
                     SET escalation_sent_at = %s
                     WHERE secondary_transaction_id = %s
                 """, (sent_at, txn_id))
@@ -169,7 +185,7 @@ async def update_db_sent(txn_id, sent_at, db, is_escalation=False, is_warning=Fa
                 log.info(f"Database updated with escalation_sent_at for Txn: {txn_id}")
             else:
                 await db.execute("""
-                    UPDATE transactions 
+                    UPDATE transactions
                     SET reminder_sent_at = %s, reminder_count = reminder_count + 1
                     WHERE secondary_transaction_id = %s
                 """, (sent_at, txn_id))
@@ -177,6 +193,63 @@ async def update_db_sent(txn_id, sent_at, db, is_escalation=False, is_warning=Fa
                 log.info(f"Database updated for Txn: {txn_id}")
     except Exception as e:
         log.error(f"DB update sent error: {e}")
+        await db.rollback()
+
+async def update_db_reply(txn_id, data, db):
+    try:
+        # Get transaction data from JSON state for retailer_id and distributor_id
+        state = load_json_state()
+        if txn_id not in state:
+            log.warning(f"Transaction {txn_id} not found in JSON state - using default values")
+            retailer_id = data.get("retailer_id", "")
+            distributor_id = data.get("distributor_id", "")
+            grouped_txns = []
+        else:
+            retailer_id = state[txn_id].get('retailer_id', '')
+            distributor_id = state[txn_id].get('distributor_id', '')
+            grouped_txns = state[txn_id].get('grouped_transactions', [])
+
+        # Determine which transactions to update
+        if grouped_txns:
+            # Update all grouped transactions
+            transactions_to_update = grouped_txns
+            log.info(f"Inserting reply for grouped transactions: {transactions_to_update}")
+        else:
+            # Update only the single transaction
+            transactions_to_update = [txn_id]
+
+        # Insert reply into payment_replies table for each transaction
+        for tid in transactions_to_update:
+            # Get retailer_id and distributor_id for each transaction
+            if tid in state:
+                tid_retailer_id = state[tid].get('retailer_id', retailer_id)
+                tid_distributor_id = state[tid].get('distributor_id', distributor_id)
+            else:
+                tid_retailer_id = retailer_id
+                tid_distributor_id = distributor_id
+
+            await db.execute("""
+                INSERT INTO payment_replies (
+                    transaction_id, retailer_id, distributor_id,
+                    reply_received_at, promised_payment_date, promised_days,
+                    amount_confirmed, raw_reply, remarks, parse_source
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                tid,
+                tid_retailer_id,
+                tid_distributor_id,
+                data.get("received_at"),
+                data.get("date"),
+                data.get("days"),
+                data.get("amount"),
+                data.get("raw_reply"),
+                json.dumps({"extracted_from": "reply_parser"}),
+                "reply_parser"
+            ))
+            await db.commit()
+            log.info(f"Reply inserted into database for Txn: {tid}")
+    except Exception as e:
+        log.error(f"DB update reply error: {e}")
         await db.rollback()
 
 def load_json_state():
@@ -228,12 +301,13 @@ async def main():
                     data = json.loads(msg.data)
                     txn_id = data.get("transaction_id")
                     update_json_state(
-                        txn_id, 
-                        raw_body=data.get("raw_reply"), 
+                        txn_id,
+                        raw_body=data.get("raw_reply"),
                         received_at=data.get("received_at"),
                         promised_date=data.get("date")
                     )
                     append_to_excel(data)
+                    await update_db_reply(txn_id, data, db)
                 except Exception as e:
                     log.error(f"State Parsed Error: {e}")
 

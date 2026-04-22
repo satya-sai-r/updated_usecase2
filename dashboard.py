@@ -10,6 +10,13 @@ from pathlib import Path
 # IST timezone (UTC+5:30)
 IST = timezone(timedelta(hours=5, minutes=30))
 
+# Try to import ijson for efficient JSON streaming
+try:
+    import ijson
+    HAS_IJSON = True
+except ImportError:
+    HAS_IJSON = False
+
 def parse_ist_datetime(val):
     """Parse ISO datetime string and convert to IST naive datetime for display."""
     if pd.isna(val) or val is None:
@@ -52,10 +59,30 @@ STATE_FILE = "data/system_state.json"
 NATS_URL = os.getenv("NATS_URL", "nats://localhost:4222")
 
 def load_state():
-    if os.path.exists(STATE_FILE):
+    if not os.path.exists(STATE_FILE):
+        return {}
+
+    try:
+        # Try to load normally first for smaller files
         with open(STATE_FILE, "r") as f:
             return json.load(f)
-    return {}
+    except (MemoryError, json.JSONDecodeError) as e:
+        # If memory error, use ijson to stream the file
+        if HAS_IJSON:
+            st.warning("Large state file detected. Using streaming mode...")
+            try:
+                state = {}
+                with open(STATE_FILE, "rb") as f:
+                    # Use ijson.kvitems to stream key-value pairs
+                    for txn_id, txn_data in ijson.kvitems(f, ''):
+                        state[txn_id] = txn_data
+                return state
+            except Exception as e:
+                st.error(f"Failed to load state file with streaming: {e}")
+                return {}
+        else:
+            st.error("State file too large to load. Please install ijson: pip install ijson")
+            return {}
 
 class DateTimeEncoder(json.JSONEncoder):
     """Custom JSON encoder to handle datetime and timezone objects."""
@@ -141,7 +168,12 @@ for col in ['mail_sent_at', 'replied_at']:
 st.subheader(f"Transactions: {sel_retailer} | {sel_date}")
 
 # Add selection column
-final_df['Send'] = False
+# Use session state to track selections and auto-select same-date transactions
+if "selected_txns" not in st.session_state:
+    st.session_state.selected_txns = set()
+
+# Initialize Send column based on session state
+final_df['Send'] = final_df['txn_id'].apply(lambda x: x in st.session_state.selected_txns)
 
 cols = ['Send', 'txn_id', 'sku_name', 'net_value', 'mail_status', 'mail_sent_at', 'reply_status', 'replied_at', 'promised_date', 'reply_content']
 
@@ -163,6 +195,20 @@ edited_df = st.data_editor(
     key="editor"
 )
 
+# Auto-select logic: If any transaction is selected, select all transactions for same date
+if not edited_df.empty:
+    selected_rows = edited_df[edited_df['Send'] == True]
+    if not selected_rows.empty:
+        # Get all transaction IDs for this retailer and date
+        all_txns_for_date = final_df['txn_id'].tolist()
+        # Update session state to include all transactions for this date
+        st.session_state.selected_txns.update(all_txns_for_date)
+        # Update the Send column to reflect auto-selection
+        edited_df['Send'] = True
+    else:
+        # Clear selection if nothing is selected
+        st.session_state.selected_txns.clear()
+
 if st.button("🚀 APPROVE & SEND SELECTED"):
     to_send = edited_df[edited_df['Send'] == True]
     if to_send.empty:
@@ -173,23 +219,37 @@ if st.button("🚀 APPROVE & SEND SELECTED"):
         # Get retailer email from environment or use default
         retailer_email_map = json.loads(os.getenv("RETAILER_EMAIL_MAP", "{}"))
         retailer_email = retailer_email_map.get(sel_retailer, os.getenv("DEFAULT_RECIPIENT", "spuvvala@gitam.in"))
+
+        # Send all selected transactions in a single email
+        transaction_ids = []
         for _, row in to_send.iterrows():
             tid = str(row['txn_id'])
+            transaction_ids.append(tid)
             # Double check mail_status in state to prevent double sends
             if not state[tid].get('mail_status'):
-                payload = {
-                    "secondary_transaction_id": tid,
-                    "retailer_id": sel_retailer,
-                    "distributor_id": sel_dist
-                }
                 state[tid]['mail_status'] = True
                 # Store as ISO string, not datetime object (for JSON serialization)
                 state[tid]['mail_sent_at'] = now_ts
-                asyncio.run(trigger_send(payload))
-                sent_now += 1
+
+        # Send single email with all transactions
+        if transaction_ids:
+            payload = {
+                "secondary_transaction_id": transaction_ids[0],  # Primary transaction ID
+                "retailer_id": sel_retailer,
+                "distributor_id": sel_dist,
+                "additional_transactions": transaction_ids[1:]  # Additional transaction IDs
+            }
+            asyncio.run(trigger_send(payload))
+            sent_now = len(transaction_ids)
+
+            # Store grouped transaction mapping for reply updates
+            # Create a mapping where each transaction ID points to all transactions in the group
+            for tid in transaction_ids:
+                state[tid]['grouped_transactions'] = transaction_ids
 
         save_state(state)
-        st.success(f"✅ Sent {sent_now} reminder(s) to retailer: {sel_retailer} at {retailer_email}")
+        st.success(f"✅ Sent email for {sent_now} transaction(s) to retailer: {sel_retailer} at {retailer_email}")
+        st.session_state.selected_txns.clear()
         st.rerun()
 
 st.divider()
