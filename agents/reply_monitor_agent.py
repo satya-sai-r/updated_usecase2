@@ -34,7 +34,11 @@ processed_emails = set()
 def extract_id(subject):
     match = re.search(r"\[(.*?)\]", subject)
     if match:
-        return match.group(1).strip().split('.')[0]
+        content = match.group(1).strip()
+        # Handle grouped transactions: "7408 + 1 more" -> "7408"
+        if '+' in content:
+            content = content.split('+')[0].strip()
+        return content.split('.')[0]
     return None
 
 def poll_imap(queue: list):

@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS transactions (
     secondary_net_value       NUMERIC(12, 2),
     reminder_sent_at          TIMESTAMPTZ,
     reminder_count            INTEGER DEFAULT 0,
+    escalation_sent_at        TIMESTAMPTZ,
+    warning_sent_at           TIMESTAMPTZ,
     created_at                TIMESTAMPTZ DEFAULT NOW()
 );
 

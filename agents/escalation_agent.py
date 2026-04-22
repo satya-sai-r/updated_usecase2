@@ -130,6 +130,14 @@ async def run_escalation_check() -> None:
                 })
                 await nc.publish("reminder.due", payload.encode())
                 log.info(f"Escalation email triggered for group of {len(grouped_txns)} transactions: {', '.join(grouped_txns)} (no reply for {ESCALATION_MINUTES} minutes)")
+
+                # Mark all transactions in group as escalated
+                for gtid in grouped_txns:
+                    await db.execute("""
+                        UPDATE transactions
+                        SET escalation_sent_at = NOW()
+                        WHERE secondary_transaction_id = %s
+                    """, (gtid,))
             else:
                 # Send escalation for single transaction
                 payload = json.dumps({
@@ -141,6 +149,13 @@ async def run_escalation_check() -> None:
                 })
                 await nc.publish("reminder.due", payload.encode())
                 log.info(f"Escalation email triggered for {txn_id} (no reply for {ESCALATION_MINUTES} minutes - reminder #{count + 1})")
+
+                # Mark transaction as escalated
+                await db.execute("""
+                    UPDATE transactions
+                    SET escalation_sent_at = NOW()
+                    WHERE secondary_transaction_id = %s
+                """, (txn_id,))
 
     await nc.close()
 

@@ -90,6 +90,14 @@ async def run_warning_check() -> None:
                 })
                 await nc.publish("reminder.due", payload.encode())
                 log.info(f"Warning email triggered for group of {len(grouped_txns)} transactions: {', '.join(grouped_txns)} (no reply {WARNING_MINUTES} minutes after escalation)")
+
+                # Mark all transactions in group as warned
+                for gtid in grouped_txns:
+                    await db.execute("""
+                        UPDATE transactions
+                        SET warning_sent_at = NOW()
+                        WHERE secondary_transaction_id = %s
+                    """, (gtid,))
             else:
                 # Send warning for single transaction
                 payload = json.dumps({
@@ -101,6 +109,13 @@ async def run_warning_check() -> None:
                 })
                 await nc.publish("reminder.due", payload.encode())
                 log.info(f"Warning email triggered for {txn_id} (no reply {WARNING_MINUTES} minutes after escalation)")
+
+                # Mark transaction as warned
+                await db.execute("""
+                    UPDATE transactions
+                    SET warning_sent_at = NOW()
+                    WHERE secondary_transaction_id = %s
+                """, (txn_id,))
 
     await nc.close()
 

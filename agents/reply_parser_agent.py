@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import nats
+import psycopg
 import requests
 import dateparser
 from datetime import datetime, timedelta
@@ -423,8 +424,31 @@ async def main():
             txn_id = payload['transaction_id']
             state = load_state()
             
+            meta = None
             if txn_id in state:
                 meta = state[txn_id]
+            else:
+                # Fallback: query database for transaction info
+                log.warning(f"Txn {txn_id} not in state file, querying database...")
+                try:
+                    dsn = os.getenv("POSTGRES_DSN")
+                    with psycopg.connect(dsn) as conn:
+                        with conn.cursor() as cur:
+                            cur.execute("""
+                                SELECT retailer_id, distributor_id 
+                                FROM transactions 
+                                WHERE secondary_transaction_id = %s
+                            """, (txn_id,))
+                            row = cur.fetchone()
+                            if row:
+                                meta = {'retailer_id': row[0], 'distributor_id': row[1]}
+                                log.info(f"Found txn {txn_id} in database: {meta}")
+                            else:
+                                log.error(f"Txn {txn_id} not found in database either, skipping reply")
+                except Exception as e:
+                    log.error(f"Database fallback failed for {txn_id}: {e}")
+            
+            if meta:
                 body = payload['body']
                 received_at_str = payload['received_at']
                 
@@ -515,16 +539,21 @@ async def main():
                         except Exception as e:
                             log.error(f"Date calculation error: {e}")
 
-                result = {
-                    "transaction_id": txn_id,
-                    "retailer_id": meta['retailer_id'],
-                    "distributor_id": meta['distributor_id'],
-                    "raw_reply": body,
-                    "received_at": received_at_str,
-                    **parsed
-                }
-                await nc.publish("reply.parsed", json.dumps(result).encode())
-                log.info(f"PARSED: {txn_id} -> {parsed.get('date', 'no date')}")
+                # Check for grouped transactions
+                grouped_txns = meta.get('grouped_transactions', [])
+                transactions_to_update = grouped_txns if grouped_txns else [txn_id]
+                
+                for tid in transactions_to_update:
+                    result = {
+                        "transaction_id": tid,
+                        "retailer_id": meta['retailer_id'],
+                        "distributor_id": meta['distributor_id'],
+                        "raw_reply": body,
+                        "received_at": received_at_str,
+                        **parsed
+                    }
+                    await nc.publish("reply.parsed", json.dumps(result).encode())
+                    log.info(f"PARSED: {tid} -> {parsed.get('date', 'no date')}")
         except Exception as e:
             log.error(f"Parser error: {e}")
 

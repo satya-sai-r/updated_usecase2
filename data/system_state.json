@@ -65762,9 +65762,15 @@
     "sku_name": "MALKIST SUGAR GB",
     "transaction_date": "2026-03-31",
     "net_value": 193389.315,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay half in 7 days and Remaining in next 15 days",
+    "mail_sent_at": "2026-04-22T17:04:54.007332+05:30",
+    "grouped_transactions": [
+      "16769"
+    ],
+    "replied_at": "2026-04-22T17:15:57+05:30",
+    "promised_date": "2026-05-14"
   },
   "16791": {
     "distributor_id": "D01",
@@ -74970,9 +74976,16 @@
     "sku_name": "BENG BENG WAFER 22GM",
     "transaction_date": "2026-02-23",
     "net_value": 74897.55,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "Pay in 15 days",
+    "mail_sent_at": "2026-04-22T17:29:06.155634+05:30",
+    "grouped_transactions": [
+      "7408",
+      "7474"
+    ],
+    "replied_at": "2026-04-22T17:37:10+05:30",
+    "promised_date": "2026-05-07"
   },
   "7430": {
     "distributor_id": "D01",
@@ -75000,9 +75013,16 @@
     "sku_name": "BENG BENG WAFER 22GM",
     "transaction_date": "2026-02-23",
     "net_value": 74897.55,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "Pay in 15 days",
+    "mail_sent_at": "2026-04-22T17:29:06.155762+05:30",
+    "grouped_transactions": [
+      "7408",
+      "7474"
+    ],
+    "replied_at": "2026-04-22T17:37:10+05:30",
+    "promised_date": "2026-05-07"
   },
   "7496": {
     "distributor_id": "D01",
@@ -75386,9 +75406,16 @@
     "sku_name": "MALKIST CHEESE  G",
     "transaction_date": "2026-01-03",
     "net_value": 97942.95,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay back remaining amount on 29 may 2026",
+    "mail_sent_at": "2026-04-22T17:39:58.541494+05:30",
+    "grouped_transactions": [
+      "2580",
+      "4646"
+    ],
+    "replied_at": "2026-04-22T17:41:02+05:30",
+    "promised_date": "2026-05-29"
   },
   "2602": {
     "distributor_id": "D01",
@@ -75868,9 +75895,16 @@
     "sku_name": "MALKIST CHEESE  FAMILY 10",
     "transaction_date": "2026-01-03",
     "net_value": 367286.0625,
-    "mail_status": false,
-    "reply_status": false,
-    "reply_content": null
+    "mail_status": true,
+    "reply_status": true,
+    "reply_content": "I will pay back remaining amount on 29 may 2026",
+    "mail_sent_at": "2026-04-22T17:39:58.541659+05:30",
+    "grouped_transactions": [
+      "2580",
+      "4646"
+    ],
+    "replied_at": "2026-04-22T17:41:02+05:30",
+    "promised_date": "2026-05-29"
   },
   "4668": {
     "distributor_id": "D01",

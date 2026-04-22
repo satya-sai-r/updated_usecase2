@@ -159,7 +159,23 @@ python agents/reply_parser_agent.py
 
 **Purpose:** Parses email replies using Duckling to extract promised payment dates.
 
-### Terminal 5: Ingestion Agent (Optional)
+### Terminal 5: Timer Agent (Optional)
+```powershell
+.\venv\Scripts\Activate.ps1
+python agents/timer_agent.py
+```
+
+**Purpose:** Schedules automatic reminders 45 days after each transaction date using APScheduler.
+
+### Terminal 6: Warning Agent (Optional)
+```powershell
+.\venv\Scripts\Activate.ps1
+python agents/warning_agent.py
+```
+
+**Purpose:** Sends warning emails when no reply is received within 1 minute after escalation email.
+
+### Terminal 7: Ingestion Agent (Optional)
 ```powershell
 .\venv\Scripts\Activate.ps1
 python agents/ingestion_agent.py
@@ -167,7 +183,7 @@ python agents/ingestion_agent.py
 
 **Purpose:** Watches `uploads/` folder for new Excel files and ingests transactions.
 
-### Terminal 6: Escalation Agent (Optional)
+### Terminal 8: Escalation Agent (Optional)
 ```powershell
 .\venv\Scripts\Activate.ps1
 python agents/escalation_agent.py
@@ -237,6 +253,8 @@ python agents/state_write_agent.py
 python agents/email_dispatch_agent.py
 python agents/reply_monitor_agent.py
 python agents/reply_parser_agent.py
+python agents/timer_agent.py
+python agents/warning_agent.py
 
 # 4. Start dashboard
 streamlit run dashboard.py
@@ -343,6 +361,8 @@ usecase2-main/
 │   ├── email_dispatch_agent.py
 │   ├── reply_monitor_agent.py
 │   ├── reply_parser_agent.py
+│   ├── timer_agent.py
+│   ├── warning_agent.py
 │   ├── ingestion_agent.py
 │   ├── escalation_agent.py
 │   └── sheet_builder_agent.py
