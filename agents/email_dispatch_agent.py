@@ -114,11 +114,11 @@ async def handle_reminder(payload: dict, nc) -> None:
             items.append({
                 "sku_name": data.get("sku_name", "N/A"),
                 "product_category_snapshot": "N/A",
-                "secondary_gross_value": data['net_value'],
-                "secondary_tax_amount": 0.0,
-                "secondary_net_value": data['net_value']
+                "secondary_gross_value": data.get('gross_value', 0),
+                "secondary_tax_amount": data.get('tax_amount', 0),
+                "secondary_net_value": data.get('net_value', 0)
             })
-            total_payable += data['net_value']
+            total_payable += data.get('net_value', 0)
 
             # Use data from primary transaction for email metadata
             if tid == txn_id:

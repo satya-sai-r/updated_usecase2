@@ -26,7 +26,8 @@
   <thead>
     <tr>
       <th>SKU Name</th>
-      <!-- <th>Gross Value (₹)</th> -->
+      <th>Gross Value (₹)</th>
+      <th>Tax Amount (₹)</th>
       <th>Net Payable (₹)</th>
     </tr>
   </thead>
@@ -34,12 +35,13 @@
     {% for item in items %}
     <tr>
       <td>{{ item.sku_name }}</td>
-      <!-- <td>{{ "%.2f"|format(item.secondary_gross_value or 0) }}</td> -->
+      <td>{{ "%.2f"|format(item.secondary_gross_value or 0) }}</td>
+      <td>{{ "%.2f"|format(item.secondary_tax_amount or 0) }}</td>
       <td>{{ "%.2f"|format(item.secondary_net_value or 0) }}</td>
     </tr>
     {% endfor %}
     <tr class="total-row">
-      <td style="text-align: right;">Total</td>
+      <td colspan="3">Total</td>
       <td>₹{{ "%.2f"|format(total_payable) }}</td>
     </tr>
   </tbody>
